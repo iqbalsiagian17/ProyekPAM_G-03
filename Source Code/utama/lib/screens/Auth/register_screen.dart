@@ -5,7 +5,6 @@ import 'package:utama/Services/auth_services.dart';
 import 'package:utama/Services/globals.dart';
 
 import 'package:utama/rounded_button.dart';
-import 'package:utama/screens/HomePage.dart';
 import 'login_screen.dart';
 import 'package:http/http.dart' as http;
 
@@ -24,27 +23,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String _email = '';
   String _password = '';
 
-  createAccountPressed() async {
-    bool emailValid = RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-        .hasMatch(_email);
-    if (emailValid) {
-      http.Response response =
-          await AuthServices.register(_nama,_nim,_noKtp,_nomorHandphone, _email, _password);
-      Map responseMap = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => const HomePage(),
-            ));
-      } else {
-        errorSnackBar(context, responseMap.values.first[0]);
-      }
-    } else {
-      errorSnackBar(context, 'email not valid');
-    }
+createAccountPressed() async {
+  bool emailValid = RegExp(
+    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+    .hasMatch(_email);
+  
+  if (emailValid) {
+    http.Response response = await AuthServices.register(
+      _nama, _nim, _noKtp, _nomorHandphone, _email, _password);
+    Map responseMap = jsonDecode(response.body);
+    
+   if (response.statusCode == 200) {
+  Navigator.pushAndRemoveUntil(
+    context,
+    MaterialPageRoute(
+      builder: (BuildContext context) => const LoginScreen(),
+    ),
+    (route) => false, // Remove all routes on top of the new route
+  );
+} else {
+  errorSnackBar(context, responseMap.values.first[0]);
+}
+
+  } else {
+    errorSnackBar(context, 'email not valid');
   }
+}
+
+
 
   @override
   Widget build(BuildContext context) {

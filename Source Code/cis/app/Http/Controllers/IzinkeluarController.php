@@ -2,48 +2,63 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Izinkeluar;
 use Illuminate\Http\Request;
+use App\Models\Izinkeluar;
+use App\Models\User;
 
 class IzinkeluarController extends Controller
 {
-    public function requestPermission(Request $request)
+    public function requestIzinKeluar(Request $request)
     {
-        // Logika untuk Mahasiswa membuat permintaan izin keluar
-        $permission = Izinkeluar::create([
-            'user_id' => $request->user()->id,
-            'reason' => $request->reason,
-            'status' => 'pending', 
-            'time_out' => $request->time_out,
-            'time_in' => $request->time_in,
+        // Validasi input, misalnya pastikan alasan tidak kosong
+        $request->validate([
+            'reason' => 'required',
+            'time_out' => 'required|date',
+            'time_in' => 'required|date'
         ]);
 
-        return response()->json($permission, 201);
+        // Buat izin keluar baru untuk role 'mahasiswa'
+        $izinKeluar = Izinkeluar::create([
+            'user_id' => auth()->user()->id, // ID pengguna yang membuat permintaan (role 'mahasiswa')
+            'reason' => $request->input('reason'),
+            'status' => 'pending', // Secara default status adalah 'pending'
+            'time_out' => $request->input('time_out'),
+            'time_in' => $request->input('time_in'),
+        ]);
+
+        return response()->json(['message' => 'Izin keluar berhasil diajukan']);
     }
 
-    public function approvePermission(Request $request, Izinkeluar $izinkeluar)
+    
+
+
+    public function getAllIzinKeluar(Request $request)
+{
+    if (auth()->user()->role !== 'baak') {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    $izinKeluarList = Izinkeluar::with('user')->get();
+
+    return response()->json($izinKeluarList);
+}
+
+
+    public function approveIzinKeluar(Request $request, $izinId)
     {
-        // Pastikan hanya 'baak' yang dapat menyetujui izin
-        if ($request->user()->role !== 'baak') {
+        // Validasi peran 'baak'
+        if (auth()->user()->role !== 'baak') {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        // Logika untuk menyetujui izin keluar oleh 'baak'
-        $izinkeluar->update(['status' => 'approved']);
+        // Cari izin keluar berdasarkan ID
+        $izinKeluar = Izinkeluar::findOrFail($izinId);
 
-        return response()->json($izinkeluar, 200);
-    }
+        // Setujui izin keluar
+        $izinKeluar->approve_id = auth()->user()->id; // ID pengguna yang menyetujui (role 'baak')
+        $izinKeluar->status = 'approved';
+        $izinKeluar->save();
 
-    public function rejectPermission(Request $request, Izinkeluar $izinkeluar)
-    {
-        // Pastikan hanya 'baak' yang dapat menolak izin
-        if ($request->user()->role !== 'baak') {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-
-        // Logika untuk menolak izin keluar oleh 'baak'
-        $izinkeluar->update(['status' => 'rejected']);
-
-        return response()->json($izinkeluar, 200);
+        return response()->json(['message' => 'Izin keluar berhasil disetujui']);
     }
 }

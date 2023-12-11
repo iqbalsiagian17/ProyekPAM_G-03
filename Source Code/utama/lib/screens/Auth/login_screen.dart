@@ -5,9 +5,9 @@ import 'package:utama/Services/auth_services.dart';
 import 'package:utama/Services/globals.dart';
 
 import 'package:utama/rounded_button.dart';
-import 'package:utama/screens/AdminPage.dart';
+import 'package:utama/screens/Baak/BaakPage.dart';
 import 'package:utama/screens/Auth/register_screen.dart';
-import 'package:utama/screens/HomePage.dart';
+import 'package:utama/screens/mahasiswa/MahasiswaPage.dart';
 import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
@@ -21,12 +21,15 @@ class _LoginScreenState extends State<LoginScreen> {
   String _email = '';
   String _password = '';
 
-  loginPressed() async {
+  Future<void> loginPressed() async {
     if (_email.isNotEmpty && _password.isNotEmpty) {
       http.Response response = await AuthServices.login(_email, _password);
       Map<String, dynamic> responseMap = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
+        String token = responseMap['token']; // Ambil token dari respons
+        print('Token: $token');
+
         // Extract the role from the response
         String role = responseMap['user']['role'];
 
@@ -35,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (BuildContext context) => const HomePage(),
+              builder: (BuildContext context) => const MahasiswaPage(),
             ),
           );
         } else if (role == 'baak') {
@@ -56,9 +59,6 @@ class _LoginScreenState extends State<LoginScreen> {
       errorSnackBar(context, 'Enter all required fields');
     }
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -114,15 +114,16 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             RoundedButton(
               btnText: 'LOG IN',
-              onBtnPressed: () => loginPressed(),
+              onBtnPressed: loginPressed,
             ),
-             GestureDetector(
+            GestureDetector(
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) =>  const RegisterScreen(),
-                    ));
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => const RegisterScreen(),
+                  ),
+                );
               },
               child: const Text(
                 'already have an account',
@@ -132,7 +133,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
           ],
-          
         ),
       ),
     );
