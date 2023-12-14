@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('izin_keluar', function (Blueprint $table) {
+        Schema::create('izin_bermalam', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users','id');
-            $table->string('reason');
+            $table->text('reason');
             $table->datetime('start_date');
             $table->datetime('end_date');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
@@ -22,13 +22,11 @@ return new class extends Migration
         });
     }
 
-
-    
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('izinkeluar');
+        Schema::dropIfExists('izin_bermalam');
     }
 };

@@ -28,15 +28,10 @@ class RequestIzinKeluar {
       id: json['id'] as int?,
       approverId: json['approver_id'] as int?,
       reason: json['reason'] as String?,
-      startDate: json['start_date'] != null
-          ? DateTime.parse(json['start_date'])
-          : null,
-      endDate:
-          json['end_date'] != null ? DateTime.parse(json['end_date']) : null,
+      startDate: json['start_date'] != null? DateTime.parse(json['start_date']): null,
+      endDate:json['end_date'] != null ? DateTime.parse(json['end_date']) : null,
       status: json['status'] as String?,
-      user: json['user'] != null
-          ? User(id: json['user']['id'], name: json['user']['name'])
-          : null,
+      user: json['user'] != null? User(id: json['user']['id'], name: json['user']['name']): null,
     );
   }
 }

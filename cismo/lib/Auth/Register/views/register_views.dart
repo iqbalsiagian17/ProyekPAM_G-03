@@ -8,6 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cismo/Auth/Login/views/login_views.dart';
 
 class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
+
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
 }
@@ -45,7 +47,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     await pref.setString('token', user.token ?? '');
     await pref.setInt('userId', user.id ?? 0);
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => MahasiswaScreen()),
+      MaterialPageRoute(builder: (context) => const MahasiswaScreen()),
       (route) => false,
     );
   }
@@ -65,7 +67,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               controller: txtname,
               validator: (val) =>
                   val!.isEmpty ? 'Nama Tidak Boleh Kosong' : null,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'nama',
                 hintText: 'Enter your name',
               ),
@@ -76,7 +78,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             TextFormField(
               controller: txtnim,
               validator: (val) => val!.isEmpty ? 'NIM tidak boleh kosong' : null,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'NIM',
                 hintText: 'Enter your NIM',
               ),
@@ -88,7 +90,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               controller: txtnomorhandphone,
               validator: (val) =>
                   val!.isEmpty ? 'Nomor Handphone tidak boleh kosong' : null,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Nomor Handphone',
                 hintText: 'Enter your Number Phone',
               ),
@@ -96,7 +98,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             TextFormField(
               controller: txtnomorktp,
               validator: (val) => val!.isEmpty ? 'Nomor KTP tidak boleh kosong' : null,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Nomor KTP',
                 hintText: 'Enter your Number KTP',
               ),
@@ -109,7 +111,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               controller: txtemail,
               validator: (val) =>
                   val!.isEmpty ? 'Invalid email address' : null,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Email',
                 hintText: 'Enter your email',
               ),
@@ -122,7 +124,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               obscureText: true,
               validator: (val) =>
                   val!.length < 6 ? 'Needs at least 6 characters' : null,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Password',
                 hintText: 'Enter your password',
               ),
@@ -143,7 +145,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   (route) => false,
                 );
               },
-              child: Text(
+              child: const Text(
                 "Sudah punya akun? Login sekarang",
                 style: TextStyle(
                   fontSize: 16,

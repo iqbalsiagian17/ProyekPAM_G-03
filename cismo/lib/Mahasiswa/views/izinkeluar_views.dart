@@ -108,123 +108,178 @@ class _RequestIzinKeluarScreenState extends State<RequestIzinKeluarScreen> {
                               .status)), // Replace with actual status property
                           DataCell(
                             PopupMenuButton(
-                              itemBuilder: (BuildContext context) {
-                                return [
-                                  PopupMenuItem(
-                                    child: Text('Edit'),
-                                    value: 'edit',
-                                  ),
-                                  PopupMenuItem(
-                                    child: Text('View'),
-                                    value: 'view',
-                                  ),
-                                  PopupMenuItem(
-                                    child: Text('Cancel'),
-                                    value: 'delete',
-                                  ),
-                                ];
-                              },
-                              onSelected: (String value) {
-                                if (value == 'edit') {
-                                  int index = _izinkeluarlist
-                                      .indexOf(requestIzinKeluar);
-                                  RequestIzinKeluar selectedIzinKeluar =
-                                      _izinkeluarlist[index];
-
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => FormIzinKeluars(
-                                      title: "Edit Izin Keluar",
-                                      formIzinKeluar: selectedIzinKeluar,
-                                    ),
-                                  ));
-                                } else if (value == 'view') {
-                                 showDialog(
-  context: context,
-  builder: (BuildContext context) {
-    return AlertDialog(
-      title: Text("View Izin Keluar"),
-      content: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: DataTable(
-          columns: [
-            DataColumn(label: Text('Information')),
-            DataColumn(label: Text('Details'), numeric: true), // Perluas lebar kolom
-          ],
-          rows: [
-            DataRow(cells: [
-              DataCell(Text('Reason')),
-              DataCell(Text(requestIzinKeluar.reason)),
-            ]),
-            DataRow(cells: [
-              DataCell(Text('Start Date')),
-              DataCell(Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(DateFormat('dd MMMM yyyy').format(requestIzinKeluar.startDate)), // Tampilkan tanggal
-                  Text(DateFormat('HH:mm:ss').format(requestIzinKeluar.startDate)), // Tampilkan waktu
-                ],
-              )),
-            ]),
-            DataRow(cells: [
-              DataCell(Text('End Date')),
-              DataCell(Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(DateFormat('dd MMMM yyyy').format(requestIzinKeluar.endDate)), // Tampilkan tanggal
-                  Text(DateFormat('HH:mm:ss').format(requestIzinKeluar.endDate)), // Tampilkan waktu
-                ],
-              )),
-            ]),
-          ],
+  itemBuilder: (BuildContext context) {
+    if (requestIzinKeluar.status == 'pending') {
+      return [
+        PopupMenuItem(
+          child: Text('Edit'),
+          value: 'edit',
         ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Text('Close'),
+        PopupMenuItem(
+          child: Text('View'),
+          value: 'view',
         ),
-      ],
-    );
+        PopupMenuItem(
+          child: Text('Cancel'),
+          value: 'delete',
+        ),
+      ];
+    } else {
+      return [
+        PopupMenuItem(
+          child: Text('View'),
+          value: 'view',
+        ),
+      ];
+    }
   },
-);
+  onSelected: (String value) {
+    if (requestIzinKeluar.status == 'pending') {
+      if (value == 'edit') {
+        int index = _izinkeluarlist.indexOf(requestIzinKeluar);
+        RequestIzinKeluar selectedIzinKeluar = _izinkeluarlist[index];
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => FormIzinKeluars(
+            title: "Edit Izin Keluar",
+            formIzinKeluar: selectedIzinKeluar,
+          ),
+        ));
+      } else if (value == 'delete') {
+        int index = _izinkeluarlist.indexOf(requestIzinKeluar);
+        RequestIzinKeluar selectedIzinKeluar = _izinkeluarlist[index];
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Delete Izin Keluar"),
+              content: Text("Apakah Anda yakin ingin menghapus izin keluar ini?"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Tutup dialog konfirmasi
+                  },
+                  child: Text('Batal'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    deleteIzinKeluar(selectedIzinKeluar.id ?? 0);
+                  },
+                  child: Text('Hapus'),
+                ),
+              ],
+            );
+          },
+        );
+      } else if (value == 'view') {
+        showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("View Izin Keluar"),
+            content: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columns: [
+                  DataColumn(label: Text('Information')),
+                  DataColumn(label: Text('Details'), numeric: true), // Perluas lebar kolom
+                ],
+                rows: [
+                  DataRow(cells: [
+                    DataCell(Text('Reason')),
+                    DataCell(Text(requestIzinKeluar.reason)),
+                  ]),
+                  DataRow(cells: [
+                    DataCell(Text('Start Date')),
+                    DataCell(Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(DateFormat('dd MMMM yyyy').format(requestIzinKeluar.startDate)),
+                        Text(DateFormat('HH:mm:ss').format(requestIzinKeluar.startDate)),
+                      ],
+                    )),
+                  ]),
+                  DataRow(cells: [
+                    DataCell(Text('End Date')),
+                    DataCell(Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(DateFormat('dd MMMM yyyy').format(requestIzinKeluar.endDate)),
+                        Text(DateFormat('HH:mm:ss').format(requestIzinKeluar.endDate)),
+                      ],
+                    )),
+                  ]),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Close'),
+              ),
+            ],
+          );
+        },
+      );
+      }
+    } else if (value == 'view') {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("View Izin Keluar"),
+            content: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columns: [
+                  DataColumn(label: Text('Information')),
+                  DataColumn(label: Text('Details'), numeric: true), // Perluas lebar kolom
+                ],
+                rows: [
+                  DataRow(cells: [
+                    DataCell(Text('Reason')),
+                    DataCell(Text(requestIzinKeluar.reason)),
+                  ]),
+                  DataRow(cells: [
+                    DataCell(Text('Start Date')),
+                    DataCell(Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(DateFormat('dd MMMM yyyy').format(requestIzinKeluar.startDate)),
+                        Text(DateFormat('HH:mm:ss').format(requestIzinKeluar.startDate)),
+                      ],
+                    )),
+                  ]),
+                  DataRow(cells: [
+                    DataCell(Text('End Date')),
+                    DataCell(Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(DateFormat('dd MMMM yyyy').format(requestIzinKeluar.endDate)),
+                        Text(DateFormat('HH:mm:ss').format(requestIzinKeluar.endDate)),
+                      ],
+                    )),
+                  ]),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Close'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  },
+)
 
-
-                                } else if (value == 'delete') {
-                                  int index = _izinkeluarlist
-                                      .indexOf(requestIzinKeluar);
-                                  RequestIzinKeluar selectedIzinKeluar =
-                                      _izinkeluarlist[index];
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: Text("Delete Izin Keluar"),
-                                        content: Text(
-                                            "Apakah Anda yakin ingin menghapus izin keluar ini?"),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(
-                                                  context); // Tutup dialog konfirmasi
-                                            },
-                                            child: Text('Batal'),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              deleteIzinKeluar(
-                                                  selectedIzinKeluar.id ?? 0);
-                                            },
-                                            child: Text('Hapus'),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                }
-                              },
-                            ),
+                            
                           ),
                         ],
                       ),

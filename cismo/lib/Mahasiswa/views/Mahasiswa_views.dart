@@ -1,7 +1,9 @@
 import 'package:cismo/Mahasiswa/views/izinkeluar_views.dart';
+import 'package:cismo/Mahasiswa/views/izinbermalam_views.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cismo/Auth/Login/views/login_views.dart';
+import 'package:cismo/Mahasiswa/views/requestsurat_views.dart';
 class MahasiswaScreen extends StatelessWidget {
   const MahasiswaScreen({Key? key}) : super(key: key);
 
@@ -35,10 +37,30 @@ class MahasiswaScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => RequestIzinKeluarScreen()), // Navigate to IzinKeluarViews
+                    MaterialPageRoute(builder: (context) => RequestIzinKeluarScreen()),
                   );
                 },
-                child: Text('Izin Keluar'), // Text displayed on the button
+                child: Text('Izin Keluar'),
+              ),
+              SizedBox(height: 20), // Add some spacing between buttons if needed
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RequestIzinBermalamScreen()), // Navigate to the new page
+                  );
+                },
+                child: Text('Izin Bermalam'), // Text displayed on the button
+              ),
+              SizedBox(height: 20), // Add some spacing between buttons if needed
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RequestSuratScreen()), // Navigate to the new page
+                  );
+                },
+                child: Text('Request Surat'), // Text displayed on the button
               ),
               // You can add more content here if needed
             ],

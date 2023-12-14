@@ -147,5 +147,63 @@ class IzinKeluarController extends Controller
     ], 200);
 }
 
+public function viewAllRequestsForBaak()
+{
+    // Pastikan bahwa pengguna yang melakukan permintaan memiliki peran 'baak'
+    if (auth()->user()->role !== 'baak') {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    // Mengambil semua data RequestIzinKeluar
+    $izinKeluarData = IzinKeluar::orderBy('created_at', 'desc')->get();
+
+    return response([
+        'RequestIzinKeluar' => $izinKeluarData
+    ], 200);
+}
+
+public function approveIzinKeluar($id)
+{
+    // Pastikan bahwa pengguna yang melakukan permintaan memiliki peran 'baak'
+    if (auth()->user()->role !== 'baak') {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    // Cari permintaan izin keluar berdasarkan ID
+    $izinKeluar = IzinKeluar::find($id);
+
+    if (!$izinKeluar) {
+        return response()->json(['message' => 'Request Izin Keluar Tidak Ditemukan'], 404);
+    }
+
+    // Update status permintaan izin keluar menjadi 'approved'
+    $izinKeluar->status = 'approved';
+    $izinKeluar->save();
+
+    return response()->json(['message' => 'Permintaan Izin Keluar Telah Disetujui'], 200);
+}
+
+public function rejectIzinKeluar($id)
+{
+    // Pastikan bahwa pengguna yang melakukan permintaan memiliki peran 'baak'
+    if (auth()->user()->role !== 'baak') {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    // Cari permintaan izin keluar berdasarkan ID
+    $izinKeluar = IzinKeluar::find($id);
+
+    if (!$izinKeluar) {
+        return response()->json(['message' => 'Request Izin Keluar Tidak Ditemukan'], 404);
+    }
+
+    // Update status permintaan izin keluar menjadi 'rejected'
+    $izinKeluar->status = 'rejected';
+    $izinKeluar->save();
+
+    return response()->json(['message' => 'Permintaan Izin Keluar Telah Ditolak'], 200);
+}
+
+
     
 }

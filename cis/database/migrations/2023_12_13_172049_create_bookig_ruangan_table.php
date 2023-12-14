@@ -11,24 +11,25 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('izin_keluar', function (Blueprint $table) {
+        Schema::create('ruangan_booking', function (Blueprint $table) {
             $table->id();
+            $table->text('reason');
             $table->foreignId('user_id')->constrained('users','id');
-            $table->string('reason');
-            $table->datetime('start_date');
-            $table->datetime('end_date');
+            $table->foreignId('approver_id')->constrained('users','id')->nullable();
+            $table->foreignId('room_id')->constrained('ruangan','id');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->dateTime('start_time');
+            $table->dateTime('end_time');
             $table->timestamps();
+
         });
     }
 
-
-    
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('izinkeluar');
+        Schema::dropIfExists('bookig_ruangan');
     }
 };

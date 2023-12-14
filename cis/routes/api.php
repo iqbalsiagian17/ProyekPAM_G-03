@@ -4,7 +4,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\IzinKeluarController;
-
+use App\Http\Controllers\IzinBermalamController;
+use App\Http\Controllers\RequestSuratController;
+use App\Http\Controllers\BookingRuanganController;
 
 
 /*
@@ -32,9 +34,47 @@ Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logo
 
 
 Route::middleware('auth:sanctum')->group(function () {
+    
+    //Mahasiswa
     Route::get('/izinkeluar',[IzinKeluarController::class, 'index']);
     Route::post('/izinkeluar',[IzinKeluarController::class, 'store']);
     Route::put('/izinkeluar/{id}',[IzinKeluarController::class, 'update']);
     Route::get('/izinkeluar/{id}',[IzinKeluarController::class, 'show']);
     Route::delete('/izinkeluar/{id}',[IzinKeluarController::class, 'destroy']);  
+
+    //Baak
+    Route::get('/izin-keluar/all', [IzinKeluarController::class, 'viewAllRequestsForBaak']);
+    Route::put('/izin-keluar/{id}/approve', [IzinKeluarController::class, 'approveIzinKeluar']);
+    Route::put('/izin-keluar/{id}/reject', [IzinKeluarController::class, 'rejectIzinKeluar']);
+
+    //Mahasiswa
+    Route::get('/izinbermalam',[IzinBermalamController::class, 'index']);
+    Route::post('/izinbermalam',[IzinBermalamController::class, 'store']);
+    Route::put('/izinbermalam/{id}',[IzinBermalamController::class, 'update']);
+    Route::get('/izinbermalam/{id}',[IzinBermalamController::class, 'show']);
+    Route::delete('/izinbermalam/{id}',[IzinBermalamController::class, 'destroy']);
+
+    //Baak
+    Route::get('/izin-bermalam/all', [IzinBermalamController::class, 'viewAllRequestsForBaak']);
+    Route::put('/izin-bermalam/{id}/approve', [IzinBermalamController::class, 'approveIzinBermalam']);
+    Route::put('/izin-bermalam/{id}/reject', [IzinBermalamController::class, 'rejectIzinBermalam']);
+
+
+    //Mahasiswa
+    Route::get('/requestsurat', [RequestSuratController::class, 'index']);
+    Route::post('/requestsurat', [RequestSuratController::class, 'store']);
+    Route::get('/requestsurat/{id}', [RequestSuratController::class, 'show']);
+    Route::put('/requestsurat/{id}', [RequestSuratController::class, 'update']);
+    Route::delete('/requestsurat/{id}', [RequestSuratController::class, 'destroy']);
+
+    //Baak
+
+
+
+    //Mahasiswa
+    Route::get('/booking-ruangan', [BookingRuanganController::class, 'index']);
+    Route::post('/booking-ruangan', [BookingRuanganController::class, 'bookRoom']);
+    Route::delete('/booking-ruangan/{id}', [BookingRuanganController::class, 'destroy']);
+
 });
+
