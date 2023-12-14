@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('request_surat', function (Blueprint $table) {
+        Schema::create('ruangan_booking', function (Blueprint $table) {
             $table->id();
+            $table->enum('ruangan', ['GD511', 'GD513', 'GD515'])->nullable();
             $table->foreignId('user_id')->constrained('users','id');
-            $table->string('reason');
-            $table->datetime('start_date');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->dateTime('start_time');
+            $table->dateTime('end_time');
             $table->timestamps();
+
         });
     }
 
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('booking_ruangan');
     }
 };

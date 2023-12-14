@@ -12,7 +12,7 @@ class RuanganBooking extends Model
 
     protected $fillable = [
         'user_id',
-        'reason',
+        'ruangan',
         'room_id',
         'start_time',
         'end_time',
@@ -25,8 +25,4 @@ class RuanganBooking extends Model
     }
 
     // Relasi dengan model Ruangan
-    public function ruangan()
-    {
-        return $this->belongsTo(Ruangan::class, 'room_id');
-    }
 }

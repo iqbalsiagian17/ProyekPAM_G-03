@@ -86,12 +86,12 @@ final TextEditingController _departureDateTimeController = TextEditingController
   @override
   void initState() {
     if (widget.formRequestSurat != null) {
-      final pickuptime = widget.formRequestSurat!.pickuptime;
+      final startDate = widget.formRequestSurat!.startDate;
       final objective = widget.formRequestSurat!.reason;
       _objectiveController.text = objective ?? '';
-      if (pickuptime != null) {
+      if (startDate != null) {
         _departureDateTimeController.text =
-            DateFormat("yyyy-MM-dd HH:mm").format(pickuptime);
+            DateFormat("yyyy-MM-dd HH:mm").format(startDate);
       }
     }
 

@@ -9,7 +9,7 @@ class RequestSurat extends Model
 {
     use HasFactory;
     protected $table ="request_surat";
-    protected $fillable = ['user_id', 'reason', 'pickup_time', 'status'];
+    protected $fillable = ['user_id', 'reason', 'start_date', 'status'];
 
     public function user()
     {

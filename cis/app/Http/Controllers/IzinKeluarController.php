@@ -41,7 +41,6 @@ class IzinKeluarController extends Controller
      */
     public function store(Request $request)
     {
-        
         $rules = [
             'reason' => 'required|string',
             'start_date' => 'required',

@@ -21,7 +21,7 @@ class IzinBermalamController extends Controller
             ->get();
     
         return response([
-            'RequestIzinBermalam' => $izinKeluarData
+            'RequestIzinBermalam' => $izinKeluarData,
         ], 200);
     }
 

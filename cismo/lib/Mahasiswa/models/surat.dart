@@ -5,14 +5,14 @@ class RequestSurat {
   int? id;
   User? user;
   String? reason;
-  DateTime? pickuptime;
+  DateTime? startDate;
   String? status;
 
   RequestSurat({
     this.id,
     this.user,
     this.reason,
-    this.pickuptime,
+    this.startDate,
     this.status,
   });
 
@@ -24,8 +24,8 @@ class RequestSurat {
     return RequestSurat(
       id: json['id'] as int?,
       reason: json['reason'] as String?,
-      pickuptime: json['pickup_time'] != null
-          ? DateTime.parse(json['pickup_time'])
+      startDate: json['start_date'] != null
+          ? DateTime.parse(json['start_date'])
           : null,
       status: json['status'] as String?,
       user: json['user'] != null

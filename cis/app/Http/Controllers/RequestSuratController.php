@@ -40,7 +40,7 @@ class RequestSuratController extends Controller
     {
         $rules = [
             'reason' => 'required|string',
-            'pickup_time' => 'required',
+            'start_date' => 'required',
         ];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
@@ -49,12 +49,12 @@ class RequestSuratController extends Controller
       
         $user = RequestSurat::create([
             'reason' => $request->input('reason'),
-            'pickup_time' => $request->input('pickup_time'),
+            'start_date' => $request->input('start_date'),
             'user_id' => auth()->user()->id
         ]);
         return response([
             'message' => 'Request Surat dibuat',
-            'RequestIzinKeluar'=>$user
+            'RequestSurat'=>$user
         ], 200);
     }
 
@@ -94,7 +94,7 @@ class RequestSuratController extends Controller
        }
        $validator = Validator::make($request->all(), [
         'reason' => 'required|string',
-        'pickup_time' => 'required|date',
+        'start_date' => 'required|date',
     ]);
 
     if ($validator->fails()) {
@@ -102,7 +102,7 @@ class RequestSuratController extends Controller
     }
        $RequestSurat->update([
          'reason' => $request->input('reason'),
-        'pickup_time' => $request->input('pickup_time'),
+        'start_date' => $request->input('start_date'),
     ]);
     return response([
         'message' => 'Request Surat Telah Diupdate',
@@ -135,4 +135,65 @@ class RequestSuratController extends Controller
         'message' => 'Request Surat Telah Dihapus',
     ], 200);
 }
+
+
+public function viewAllRequestsForBaak()
+{
+    // Pastikan bahwa pengguna yang melakukan permintaan memiliki peran 'baak'
+    if (auth()->user()->role !== 'baak') {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    // Mengambil semua data RequestIzinKeluar
+    $requestSuratData = RequestSurat::orderBy('created_at', 'desc')->get();
+
+    
+    return response([
+        'RequestSurat' => $requestSuratData
+    ], 200);
+}
+
+public function approveRequestSurat($id)
+{
+    // Pastikan bahwa pengguna yang melakukan permintaan memiliki peran 'baak'
+    if (auth()->user()->role !== 'baak') {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    // Cari permintaan izin keluar berdasarkan ID
+    $requestKeluar = RequestSurat::find($id);
+
+    if (!$requestKeluar) {
+        return response()->json(['message' => 'Request Surat Tidak Ditemukan'], 404);
+    }
+
+    // Update status permintaan izin keluar menjadi 'approved'
+    $requestKeluar->status = 'approved';
+    $requestKeluar->save();
+
+    return response()->json(['message' => 'Permintaan Request Surat Telah Disetujui'], 200);
+}
+
+public function rejectRequestSurat($id)
+{
+    // Pastikan bahwa pengguna yang melakukan permintaan memiliki peran 'baak'
+    if (auth()->user()->role !== 'baak') {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    // Cari permintaan izin keluar berdasarkan ID
+    $requestSurat = RequestSurat::find($id);
+
+    if (!$requestSurat) {
+        return response()->json(['message' => 'Request Izin Keluar Tidak Ditemukan'], 404);
+    }
+
+    // Update status permintaan izin keluar menjadi 'rejected'
+    $requestSurat->status = 'rejected';
+    $requestSurat->save();
+
+    return response()->json(['message' => 'Permintaan Izin Keluar Telah Ditolak'], 200);
+}
+
+
 }

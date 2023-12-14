@@ -68,13 +68,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/requestsurat/{id}', [RequestSuratController::class, 'destroy']);
 
     //Baak
-
-
+    Route::get('/request-surat/all', [RequestSuratController::class, 'viewAllRequestsForBaak']);
+    Route::put('/request-surat/{id}/approve', [RequestSuratController::class, 'approveRequestSurat']);
+    Route::put('/request-surat/{id}/reject', [RequestSuratController::class, 'rejectRequestSurat']);
 
     //Mahasiswa
-    Route::get('/booking-ruangan', [BookingRuanganController::class, 'index']);
-    Route::post('/booking-ruangan', [BookingRuanganController::class, 'bookRoom']);
-    Route::delete('/booking-ruangan/{id}', [BookingRuanganController::class, 'destroy']);
+    Route::get('/bookingruangan', [BookingRuanganController::class, 'index']);
+    Route::post('/bookingruangan', [BookingRuanganController::class, 'store']);
+    Route::get('/bookingruangan/{id}', [BookingRuanganController::class, 'show']);
+    Route::put('/bookingruangan/{id}', [BookingRuanganController::class, 'update']);
+    Route::delete('/bookingruangan/{id}', [BookingRuanganController::class, 'destroy']);
 
 });
 

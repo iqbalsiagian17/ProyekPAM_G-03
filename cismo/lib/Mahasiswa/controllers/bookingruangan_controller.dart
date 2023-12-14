@@ -1,23 +1,27 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:cismo/api_response.dart';
-import 'package:cismo/Mahasiswa/models/surat.dart';
+import 'package:cismo/Mahasiswa/models/bookingruangan.dart';
 import 'package:cismo/global.dart';
 import 'package:cismo/Auth/Login/controllers/login_controller.dart';
 
-Future<ApiResponse> CreateRequestSurat(
-    String reason, DateTime start_date) async {
+Future<ApiResponse> createRuanganBooking(
+    String ruangan, DateTime start_time, DateTime end_time) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
-    final response =
-        await http.post(Uri.parse(baseURL + 'requestsurat'), headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $token'
-    }, body: {
-      'reason': reason,
-      'start_date': start_date.toString(),
-    });
+    final response = await http.post(
+      Uri.parse(baseURL + 'bookingruangan'),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: {
+        'ruangan': ruangan,
+        'start_time': start_time.toIso8601String(),
+        'end_time': end_time.toIso8601String(),
+      },
+    );
 
     switch (response.statusCode) {
       case 200:
@@ -40,100 +44,108 @@ Future<ApiResponse> CreateRequestSurat(
   return apiResponse;
 }
 
-Future<ApiResponse> getRequestSurat() async {
+Future<ApiResponse> getRuanganBooking() async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
     final response = await http.get(
-      Uri.parse(baseURL + 'requestsurat'),
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token'
-        },
-        );
-
+      Uri.parse(baseURL + 'bookingruangan'),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
     switch (response.statusCode) {
       case 200:
-        apiResponse.data =
-            (jsonDecode(response.body)['RequestSurat'] as List)
-                .map((p) => RequestSurat.fromJson(p))
-                .toList();
+        apiResponse.data = (jsonDecode(response.body)['RuanganBooking'] as List)
+            .map((p) => RuanganBooking.fromJson(p))
+            .toList();
         break;
       case 401:
         apiResponse.error = unauthrorized;
         break;
       default:
         apiResponse.error = somethingWentWrong;
-        // Log the actual server response for debugging
         print("Server Response: ${response.body}");
         break;
     }
   } catch (e) {
     apiResponse.error = 'server error';
-    print("Error in getIzinKeluar: $e");
   }
   return apiResponse;
 }
 
-Future<ApiResponse> updateRequestSurat(
-    int id, String reason, DateTime start_date) async {
+Future<ApiResponse> updateRuanganBooking(
+    int id,String ruangan, DateTime start_time, DateTime end_time) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
     final response = await http.put(
-      Uri.parse(baseURL + 'requestsurat/$id'), // Use PUT method here
+      Uri.parse(baseURL + 'bookingruangan/$id'),
       headers: {
         'Accept': 'application/json',
         'Authorization': 'Bearer $token',
       },
       body: {
-        'reason': reason,
-        'start_date':start_date.toIso8601String(), // Convert DateTime to string
+        'ruangan': ruangan,
+        'start_time': start_time.toIso8601String(),
+        'end_time': end_time.toIso8601String(),
       },
     );
 
-    // Handle response based on status code
     switch (response.statusCode) {
       case 200:
         apiResponse.data = jsonDecode(response.body)['message'];
         break;
       case 403:
-        apiResponse.data = jsonDecode(response.body)['message'];
-        break;
-      case 401:
-        apiResponse.error = 'Unauthorized';
-        break;
-      default:
-        apiResponse.error = 'Something went wrong';
-        break;
-    }
-  } catch (e) {
-    apiResponse.error = 'Server error: $e';
-  }
-  return apiResponse;
-}
-
-Future<ApiResponse> DeleteRequestSurat(int id) async {
-  ApiResponse apiResponse = ApiResponse();
-  try {
-    String token = await getToken();
-    final response = await http.delete(Uri.parse(baseURL + 'requestsurat/$id'),
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token'
-        });
-
-    switch (response.statusCode) {
-      case 200:
-        apiResponse.data = jsonDecode(response.body)['message'];
-        break;
-      case 403:
-        apiResponse.data = jsonDecode(response.body)['message'];
+        apiResponse.error = jsonDecode(response.body)['message'];
         break;
       case 401:
         apiResponse.error = unauthrorized;
         break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
     }
-  } catch (e) {}
+  } catch (e) {
+    apiResponse.error = 'server error';
+  }
   return apiResponse;
 }
+
+Future<ApiResponse> cancelBooking(int id) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    String token = await getToken();
+    final response = await http.delete(
+      Uri.parse(baseURL + 'bookingruangan/$id'),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      case 403:
+        apiResponse.error = jsonDecode(response.body)['message'];
+        break;
+      case 401:
+        apiResponse.error = unauthrorized;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  } catch (e) {
+    apiResponse.error = 'server error';
+  }
+  return apiResponse;
+}
+
+// Anda juga dapat menambahkan fungsi-fungsi lainnya seperti getRuanganBookingById, atau fungsi khusus lainnya sesuai kebutuhan aplikasi Anda.
+
+
+// Fungsi-fungsi lainnya untuk update, delete, atau operasi lainnya dengan controller ruangan booking.

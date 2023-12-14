@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cismo/Auth/Login/views/login_views.dart';
 import 'package:cismo/Mahasiswa/views/requestsurat_views.dart';
+import 'package:cismo/Mahasiswa/views/bookingruangan_views.dart';
+
 class MahasiswaScreen extends StatelessWidget {
   const MahasiswaScreen({Key? key}) : super(key: key);
 
@@ -26,46 +28,65 @@ class MahasiswaScreen extends StatelessWidget {
         backgroundColor: Colors.blue,
         elevation: 0,
       ),
-      body: Container(
-        decoration: BoxDecoration(),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => RequestIzinKeluarScreen()),
-                  );
-                },
-                child: Text('Izin Keluar'),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          UserCard(), // Menampilkan informasi user
+          SizedBox(height: 20),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 20.0,
+                mainAxisSpacing: 20.0,
+                children: [
+                  CustomCard(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => RequestIzinKeluarScreen()),
+                      );
+                    },
+                    icon: Icons.exit_to_app,
+                    text: 'Izin Keluar',
+                  ),
+                  CustomCard(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => RequestIzinBermalamScreen()),
+                      );
+                    },
+                    icon: Icons.hotel,
+                    text: 'Izin Bermalam',
+                  ),
+                  CustomCard(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => RequestSuratScreen()),
+                      );
+                    },
+                    icon: Icons.mail,
+                    text: 'Request Surat',
+                  ),
+                  CustomCard(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => BookingRuanganScreen()), // Tambahkan menuju BookingRuanganScreen
+                      );
+                    },
+                    icon: Icons.room_service, // Ganti dengan ikon yang sesuai
+                    text: 'Booking Ruangan', // Ganti teks sesuai dengan menu baru
+                  ),
+                  // Tambahkan card lainnya di sini jika diperlukan
+                ],
               ),
-              SizedBox(height: 20), // Add some spacing between buttons if needed
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => RequestIzinBermalamScreen()), // Navigate to the new page
-                  );
-                },
-                child: Text('Izin Bermalam'), // Text displayed on the button
-              ),
-              SizedBox(height: 20), // Add some spacing between buttons if needed
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => RequestSuratScreen()), // Navigate to the new page
-                  );
-                },
-                child: Text('Request Surat'), // Text displayed on the button
-              ),
-              // You can add more content here if needed
-            ],
+            ),
           ),
-        ),
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
@@ -76,6 +97,80 @@ class MahasiswaScreen extends StatelessWidget {
         backgroundColor: Colors.red,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
+}
+
+class UserCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Ganti dengan informasi yang sesuai dari model login.dart
+    String nama = '...';
+    String nim = '...';
+    String email = '...';
+
+    return Card(
+      elevation: 5,
+      margin: EdgeInsets.all(16.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Nama: $nama',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
+            Text('NIM: $nim', style: TextStyle(fontSize: 16)),
+            SizedBox(height: 8),
+            Text('Email: $email', style: TextStyle(fontSize: 16)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CustomCard extends StatelessWidget {
+  final VoidCallback onPressed;
+  final IconData icon;
+  final String text;
+
+  const CustomCard({
+    Key? key,
+    required this.onPressed,
+    required this.icon,
+    required this.text,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: InkWell(
+        onTap: onPressed,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 50),
+              SizedBox(height: 10),
+              Text(
+                text,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
