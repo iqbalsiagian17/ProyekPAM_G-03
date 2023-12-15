@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cismo/Baak/views/izinkeluarBaak_views.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cismo/Baak/views/requestsuratBaak_views.dart';
+import 'package:cismo/Baak/views/bookingruanganBaak_views.dart';
 
 class BaakScreen extends StatelessWidget {
   const BaakScreen({Key? key}) : super(key: key);
@@ -114,7 +115,7 @@ class BaakScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => RequestSuratView(),
+                            builder: (context) => BookingRuanganBaakView(),
                           ),
                         );
                       },

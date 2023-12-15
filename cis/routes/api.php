@@ -79,5 +79,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/bookingruangan/{id}', [BookingRuanganController::class, 'update']);
     Route::delete('/bookingruangan/{id}', [BookingRuanganController::class, 'destroy']);
 
+    //Baak
+    Route::get('/booking-ruangan/all', [BookingRuanganController::class, 'viewAllRequestsForBaak']);
+    Route::put('/booking-ruangan/{id}/approve', [BookingRuanganController::class, 'approveBookingRuangan']);
+    Route::put('/booking-ruangan/{id}/reject', [BookingRuanganController::class, 'rejectBookingRuangan']);
+
 });
 

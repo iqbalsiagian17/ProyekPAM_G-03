@@ -5,7 +5,7 @@ import 'package:cismo/Mahasiswa/models/bookingruangan.dart';
 import 'package:cismo/global.dart';
 import 'package:cismo/Auth/Login/controllers/login_controller.dart';
 
-Future<ApiResponse> createRuanganBooking(
+Future<ApiResponse> CreateRuanganBooking(
     String ruangan, DateTime start_time, DateTime end_time) async {
   ApiResponse apiResponse = ApiResponse();
   try {
@@ -25,11 +25,51 @@ Future<ApiResponse> createRuanganBooking(
 
     switch (response.statusCode) {
       case 200:
-        apiResponse.data = jsonDecode(response.body);
+        apiResponse.data = RuanganBooking.fromJson(jsonDecode(response.body));
         break;
       case 422:
         final errors = jsonDecode(response.body)['errors'];
         apiResponse.error = errors[errors.keys.elementAt(0)][0];
+        break;
+      case 401:
+      apiResponse.error = 'Unauthorized access. Please login again.';
+      break;
+    default:
+      apiResponse.error = 'Ruangan telah dipesan pada rentang waktu tersebut.';
+      break;
+
+    }
+  } catch (e) {
+    apiResponse.error = 'Booking Ruangan Telah Diajukan Silahkan Menunggu Persetujuan';
+  }
+  return apiResponse;
+}
+
+
+Future<ApiResponse> updateRuanganBooking(
+    int id,String ruangan, DateTime start_time, DateTime end_time) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    String token = await getToken();
+    final response = await http.put(
+      Uri.parse(baseURL + 'bookingruangan/$id'),
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: {
+        'ruangan': ruangan,
+        'start_time': start_time.toIso8601String(),
+        'end_time': end_time.toIso8601String(),
+      },
+    );
+
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      case 403:
+        apiResponse.error = jsonDecode(response.body)['message'];
         break;
       case 401:
         apiResponse.error = unauthrorized;
@@ -75,45 +115,7 @@ Future<ApiResponse> getRuanganBooking() async {
   return apiResponse;
 }
 
-Future<ApiResponse> updateRuanganBooking(
-    int id,String ruangan, DateTime start_time, DateTime end_time) async {
-  ApiResponse apiResponse = ApiResponse();
-  try {
-    String token = await getToken();
-    final response = await http.put(
-      Uri.parse(baseURL + 'bookingruangan/$id'),
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: {
-        'ruangan': ruangan,
-        'start_time': start_time.toIso8601String(),
-        'end_time': end_time.toIso8601String(),
-      },
-    );
-
-    switch (response.statusCode) {
-      case 200:
-        apiResponse.data = jsonDecode(response.body)['message'];
-        break;
-      case 403:
-        apiResponse.error = jsonDecode(response.body)['message'];
-        break;
-      case 401:
-        apiResponse.error = unauthrorized;
-        break;
-      default:
-        apiResponse.error = somethingWentWrong;
-        break;
-    }
-  } catch (e) {
-    apiResponse.error = 'server error';
-  }
-  return apiResponse;
-}
-
-Future<ApiResponse> cancelBooking(int id) async {
+Future<ApiResponse> Cancelbooking(int id) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();

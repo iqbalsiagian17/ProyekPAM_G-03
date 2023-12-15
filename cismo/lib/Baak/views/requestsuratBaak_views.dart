@@ -21,7 +21,7 @@ class _RequestSuratViewState extends State<RequestSuratView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Request Izin Bermalam Baak'),
+        title: Text('Permohonan Booking Ruangan'),
       ),
       body: FutureBuilder<ApiResponse<List<RequestSurat>>>(
         future: _requestSuratData,

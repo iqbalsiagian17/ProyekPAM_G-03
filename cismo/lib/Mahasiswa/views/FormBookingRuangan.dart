@@ -57,29 +57,32 @@ class _FormBookingRuanganState extends State<FormBookingRuangan> {
     }
   }
 
+String unauthorized = 'Unauthorized access. Please login again.';
+
   void _createRuanganBooking() async {
   DateTime startTime = DateTime.parse(_startTimeController.text);
   DateTime endTime = DateTime.parse(_endTimeController.text);
-  ApiResponse response = await createRuanganBooking(
+  
+  ApiResponse response = await CreateRuanganBooking(
     _ruanganController.text,
     startTime,
     endTime,
   );
 
   if (response.error == null) {
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (BuildContext context) => BookingRuanganScreen(),
       ),
     );
-  } else if (response.error == unauthrorized) {
+  } else if (response.error == unauthorized) {
     logout().then((value) => {
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => LoginScreen()),
-            (route) => false,
-          )
-        });
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+        (route) => false,
+      )
+    });
   } else {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text('${response.error}'),
@@ -89,6 +92,8 @@ class _FormBookingRuanganState extends State<FormBookingRuangan> {
     });
   }
 }
+
+
 
 
   @override
@@ -182,24 +187,48 @@ TextFormField(
 
               // Submit Button
               ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    setState(() {
-                      _loading = !_loading;
-                    });
-                    if (widget.formBookingRuangan == null) {
-                      _createRuanganBooking();
-                    } else {
-                      _editRuanganBooking(widget.formBookingRuangan!.id);
-                    }
-                  }
+  onPressed: () {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _loading = !_loading;
+      });
+      if (widget.formBookingRuangan == null) {
+        _createRuanganBooking();
+      } else {
+        _editRuanganBooking(widget.formBookingRuangan!.id);
+      }
+    }
+  },
+  child: Text('Submit'),
+),
+SizedBox(height: 16.0), // Adding space between buttons
+// Refresh Button
+ SizedBox(height: 8), // Spacer antara Submit Button dan Refresh Text
+
+            // Refresh Text
+            Align(
+              alignment: Alignment.center,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => BookingRuanganScreen(),
+                    ),
+                  );
                 },
-                child: Text('Submit'),
+                child: Text(
+                  'Refresh',
+                  style: TextStyle(
+                    color: Colors.blue, // Warna teks
+                    decoration: TextDecoration.underline, // Garis bawah
+                  ),
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-    );
-  }
-}
+    ),
+  );
+}}

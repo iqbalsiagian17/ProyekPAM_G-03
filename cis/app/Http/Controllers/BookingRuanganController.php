@@ -10,9 +10,7 @@ use App\Models\User;
 
 class BookingRuanganController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         $user = Auth::user();
@@ -62,15 +60,11 @@ if ($existingBooking) {
     ]);
 
     return response([
-        'message' => 'Request Izin Keluar dibuat',
+        'message' => 'Booking Ruangan dibuat',
         'RuanganBooking'=>$user
     ], 200);
 }
 
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         return response([
@@ -78,22 +72,12 @@ if ($existingBooking) {
         ], 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Request $request, string $id)
-    {
-          }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $BookingRuangan = RuanganBooking::find($id);
     if (!$BookingRuangan) {
         return response([
-            'message' => 'Request Izin Keluar Tidak Ditemukan',
+            'message' => 'Booking Ruangan Tidak Ditemukan',
         ], 403);
     }
     if ($BookingRuangan->user_id != auth()->user()->id) {
@@ -119,21 +103,18 @@ if ($existingBooking) {
     ]);
 
     return response([
-        'message' => 'Request Izin Keluar Telah Diupdate',
+        'message' => 'Booking Ruangan Telah Diupdate',
         'RequestIzinKeluar' => $BookingRuangan
     ], 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $BookingRuangan = RuanganBooking::find($id);
 
         if (!$BookingRuangan) {
             return response([
-                'message' => 'Request Izin Keluar Tidak Ditemukan',
+                'message' => 'Booking Ruangan Tidak Ditemukan',
             ], 403);
         }
     
@@ -146,7 +127,64 @@ if ($existingBooking) {
         $BookingRuangan->delete();
     
         return response([
-            'message' => 'Request Izin Keluar Telah Dihapus',
+            'message' => 'Booking Ruangan Telah Dihapus',
         ], 200);
     }
+
+    public function viewAllRequestsForBaak()
+{
+    // Pastikan bahwa pengguna yang melakukan permintaan memiliki peran 'baak'
+    if (auth()->user()->role !== 'baak') {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    // Mengambil semua data RequestIzinKeluar
+    $ruanganBookingData = RuanganBooking::orderBy('created_at', 'desc')->get();
+
+    return response([
+        'RuanganBooking' => $ruanganBookingData
+    ], 200);
+}
+
+public function approveBookingRuangan($id)
+{
+    // Pastikan bahwa pengguna yang melakukan permintaan memiliki peran 'baak'
+    if (auth()->user()->role !== 'baak') {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    // Cari permintaan Booking Ruangan berdasarkan ID
+    $BookingRuangan = RuanganBooking::find($id);
+
+    if (!$BookingRuangan) {
+        return response()->json(['message' => 'Booking Ruangan Tidak Ditemukan'], 404);
+    }
+
+    // Update status permintaan Booking Ruangan menjadi 'approved'
+    $BookingRuangan->status = 'approved';
+    $BookingRuangan->save();
+
+    return response()->json(['message' => 'Permintaan Booking Ruangan Telah Disetujui'], 200);
+}
+
+public function rejectBookingRuangan($id)
+{
+    // Pastikan bahwa pengguna yang melakukan permintaan memiliki peran 'baak'
+    if (auth()->user()->role !== 'baak') {
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
+
+    // Cari permintaan Booking Ruangan berdasarkan ID
+    $BookingRuangan = RuanganBooking::find($id);
+
+    if (!$BookingRuangan) {
+        return response()->json(['message' => 'Booking Ruangan Tidak Ditemukan'], 404);
+    }
+
+    // Update status permintaan Booking Ruangan menjadi 'rejected'
+    $BookingRuangan->status = 'rejected';
+    $BookingRuangan->save();
+
+    return response()->json(['message' => 'Permintaan Booking Ruangan Telah Ditolak'], 200);
+}
 }

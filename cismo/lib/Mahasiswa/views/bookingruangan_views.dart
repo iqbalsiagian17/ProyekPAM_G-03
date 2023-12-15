@@ -57,7 +57,7 @@ void _navigateToFormBookingRuangan() {
 
   void CancelBooking(int id) async {
     try {
-      ApiResponse response = await cancelBooking(id);
+      ApiResponse response = await Cancelbooking(id);
 
       if (response.error == null) {
         await Future.delayed(Duration(milliseconds: 300));
@@ -115,6 +115,7 @@ void _navigateToFormBookingRuangan() {
                                       value: 'edit',
                                     ),
                                     PopupMenuItem(
+                                      
                                       child: Text('Delete'),
                                       value: 'delete',
                                     ),
@@ -153,7 +154,7 @@ void _navigateToFormBookingRuangan() {
                                           ),
                                           TextButton(
                                             onPressed: () {
-                                              cancelBooking(bookingRuangan.id ?? 0);
+                                              CancelBooking(bookingRuangan.id);
                                             },
                                             child: Text('Delete'),
                                           ),
