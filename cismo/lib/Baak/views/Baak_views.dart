@@ -1,4 +1,5 @@
 import 'package:cismo/Auth/Login/views/login_views.dart';
+import 'package:cismo/Baak/views/bookingbajuBaak_views.dart';
 import 'package:cismo/Baak/views/izinbermalamBaak_views.dart';
 import 'package:flutter/material.dart';
 import 'package:cismo/Baak/views/izinkeluarBaak_views.dart';
@@ -20,125 +21,101 @@ class BaakScreen extends StatelessWidget {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+ Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
       appBar: AppBar(
-        title: Text('Home Screen'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () {
-              logout(context);
-            },
-          ),
-        ],
+        title: Text('Baak IT Del'),
+        backgroundColor: Colors.blue,
+        elevation: 0,
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Image.asset(
-            'assets/images/itdel.png',
-            width: 100,
-            height: 150,
-          ),
-          Text(
-            'Welcome to Baak Screen',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 10),
+          SizedBox(height: 20),
           Expanded(
-            child: Row(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: CardItem(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => IzinKeluarBaakView(),
-                          ),
-                        );
-                      },
-                      icon: Icon(Icons.exit_to_app, size: 70), // Icon keluar dengan ukuran 70
-                      text: 'Request Izin Keluar',
-                    ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 20.0,
+                mainAxisSpacing: 20.0,
+                children: [
+                  CustomCard(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => IzinKeluarBaakView()),
+                      );
+                    },
+                    icon: Icons.exit_to_app,
+                    text: 'Permohonan Izin Keluar Mahasiswa',
                   ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: CardItem(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => IzinBermalamBaakView(),
-                          ),
-                        );
-                      },
-                      icon: Icon(Icons.hotel, size: 70), // Icon bermalam dengan ukuran 70
-                      text: 'Request Izin Bermalam',
-                    ),
+                  CustomCard(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => IzinBermalamBaakView()),
+                      );
+                    },
+                    icon: Icons.hotel,
+                    text: 'Permohonan Izin Bermalam Mahasiswa',
                   ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Row(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: CardItem(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RequestSuratView(),
-                          ),
-                        );
-                      },
-                      icon: Icon(Icons.mail, size: 70), // Icon surat dengan ukuran 70
-                      text: 'Request Surat',
-                    ),
+                  CustomCard(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => RequestSuratView()),
+                      );
+                    },
+                    icon: Icons.mail,
+                    text: 'Permohonan Surat Mahasiwa',
                   ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: CardItem(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => BookingRuanganBaakView(),
-                          ),
-                        );
-                      },
-                      icon: Icon(Icons.room_service, size: 70), // Icon surat dengan ukuran 70
-                      text: 'Booking Ruangan',
-                    ),
+                  CustomCard(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => BookingRuanganBaakView()), // Tambahkan menuju BookingRuanganScreen
+                      );
+                    },
+                    icon: Icons.room_service, // Ganti dengan ikon yang sesuai
+                    text: 'Permohonan Pemakaian Ruangan', // Ganti teks sesuai dengan menu baru
                   ),
-                ),
-              ],
+                  CustomCard(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => BookingBajuBaakView()), // Tambahkan menuju BookingRuanganScreen
+                      );
+                    },
+                    icon: Icons.local_offer, // Ganti dengan ikon yang sesuai
+                    text: 'Pemesanan Baju Mahasiswa', // Ganti teks sesuai dengan menu baru
+                  ),
+                  // Tambahkan card lainnya di sini jika diperlukan
+                ],
+              ),
             ),
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          logout(context);
+        },
+        label: const Text('Logout'),
+        icon: const Icon(Icons.logout),
+        backgroundColor: Colors.red,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
 
-class CardItem extends StatelessWidget {
+class CustomCard extends StatelessWidget {
   final VoidCallback onPressed;
-  final Icon icon;
+  final IconData icon;
   final String text;
 
-  const CardItem({
+  const CustomCard({
     Key? key,
     required this.onPressed,
     required this.icon,
@@ -148,19 +125,25 @@ class CardItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
       child: InkWell(
         onTap: onPressed,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            icon,
-            SizedBox(height: 8),
-            Text(
-              text,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14),
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 50),
+              SizedBox(height: 10),
+              Text(
+                text,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );

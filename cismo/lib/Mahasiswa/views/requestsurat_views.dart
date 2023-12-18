@@ -49,7 +49,7 @@
     void _navigateToAddData() {
       Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => FormRequestSurat(
-                title: 'Request Izin Keluar',
+                title: 'Request Surat',
               )));
     }
 
@@ -69,7 +69,7 @@
           ));
         }
       } catch (e) {
-        print("Error in deleteIzinKeluar: $e");
+        print("Error in delete Reqeust Surat: $e");
       }
     }
 
@@ -84,7 +84,7 @@
     Widget build(BuildContext context) {
       return Scaffold(
           appBar: AppBar(
-          title: Text('List'),
+          title: Text('Permohonan Request Surat'),
         ),
         body: _loading
             ? Center(child: CircularProgressIndicator())
@@ -93,7 +93,7 @@
                 child: DataTable(
                   columns: [
                     DataColumn(label: Text('No')),
-                    DataColumn(label: Text('Reason')),
+                    DataColumn(label: Text('Tujuan')),
                     DataColumn(label: Text('Status')),
                     DataColumn(label: Text('Actions')),
                   ],
@@ -140,7 +140,7 @@
           RequestSurat selectedRequestSurat = _requestSurat[index];
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => FormRequestSurat(
-              title: "Edit Izin Keluar",
+              title: "Edit Reqeust Surat",
               formRequestSurat: selectedRequestSurat,
             ),
           ));
@@ -151,8 +151,8 @@
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text("Delete Izin Keluar"),
-                content: Text("Apakah Anda yakin ingin menghapus izin keluar ini?"),
+                title: Text("Delete Reqeust Surat"),
+                content: Text("Apakah Anda yakin ingin menghapus Reqeust Surat ini?"),
                 actions: [
                   TextButton(
                     onPressed: () {
@@ -175,7 +175,7 @@
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-  title: Text("View Izin Keluar"),
+  title: Text("View Reqeust Surat"),
   content: SingleChildScrollView(
     scrollDirection: Axis.horizontal,
     child: DataTable(
@@ -219,7 +219,7 @@
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text("View Izin Keluar"),
+              title: Text("View Reqeust Surat"),
               content: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: DataTable(

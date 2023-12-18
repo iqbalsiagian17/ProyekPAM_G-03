@@ -154,7 +154,7 @@ class _FormIzinKeluarState extends State<FormIzinKeluars> {
               TextFormField(
                 controller: _reasonController,
                 decoration: InputDecoration(
-                  labelText: 'Reason',
+                  labelText: 'Alasan',
                 ),
               ),
               SizedBox(height: 16.0),
@@ -165,7 +165,7 @@ class _FormIzinKeluarState extends State<FormIzinKeluars> {
                 onTap: () => _selectDate(context, _departureDateTimeController),
                 readOnly: true,
                 decoration: InputDecoration(
-                  labelText: 'Tanggal Keluar',
+                  labelText: 'Berangkat',
                 ),
               ),
               SizedBox(height: 16.0),
@@ -176,7 +176,7 @@ class _FormIzinKeluarState extends State<FormIzinKeluars> {
                 onTap: () => _selectDate(context, _returnDateTimeController),
                 readOnly: true,
                 decoration: InputDecoration(
-                  labelText: 'Tanggal Masuk',
+                  labelText: 'Kembali',
                 ),
               ),
               SizedBox(height: 16.0),

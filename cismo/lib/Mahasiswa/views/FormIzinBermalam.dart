@@ -151,7 +151,7 @@ class _FormIzinBermalamState extends State<FormIzinBermalam> {
               TextFormField(
                 controller: _reasonController,
                 decoration: InputDecoration(
-                  labelText: 'Reason',
+                  labelText: 'Alasan',
                 ),
               ),
               SizedBox(height: 16.0),
@@ -163,7 +163,7 @@ class _FormIzinBermalamState extends State<FormIzinBermalam> {
                     _selectDate(context, _startDateController),
                 readOnly: true,
                 decoration: InputDecoration(
-                  labelText: 'Start Date',
+                  labelText: 'Berangkat',
                 ),
               ),
               SizedBox(height: 16.0),
@@ -175,7 +175,7 @@ class _FormIzinBermalamState extends State<FormIzinBermalam> {
                     _selectDate(context, _endDateController),
                 readOnly: true,
                 decoration: InputDecoration(
-                  labelText: 'End Date',
+                  labelText: 'Kembali',
                 ),
               ),
               SizedBox(height: 16.0),

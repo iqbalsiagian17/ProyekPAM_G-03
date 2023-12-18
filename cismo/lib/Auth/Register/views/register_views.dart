@@ -47,7 +47,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     await pref.setString('token', user.token ?? '');
     await pref.setInt('userId', user.id ?? 0);
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => const MahasiswaScreen()),
+      MaterialPageRoute(builder: (context) => MahasiswaScreen()),
       (route) => false,
     );
   }
@@ -63,28 +63,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
             const SizedBox(
               height: 20,
             ),
+             SizedBox(
+              height: 20,
+            ),
+            // Displaying the 'itdel.png' logo
+            Image.asset(
+              'assets/images/itdel.png',
+              width: 150, // Set the width as per your requirement
+              height: 150, // Set the height as per your requirement
+            ),
             TextFormField(
               controller: txtname,
               validator: (val) =>
                   val!.isEmpty ? 'Nama Tidak Boleh Kosong' : null,
               decoration: const InputDecoration(
-                labelText: 'nama',
-                hintText: 'Enter your name',
+                labelText: 'Nama Lengkap',
+                hintText: 'Masukkan Nama Lengkap Anda',
               ),
             ),
             const SizedBox(
-              height: 30,
+              height: 20,
             ),
             TextFormField(
               controller: txtnim,
               validator: (val) => val!.isEmpty ? 'NIM tidak boleh kosong' : null,
               decoration: const InputDecoration(
                 labelText: 'NIM',
-                hintText: 'Enter your NIM',
+                hintText: 'Masukkan NIM Anda',
               ),
             ),
             const SizedBox(
-              height: 30,
+              height: 20,
             ),
             TextFormField(
               controller: txtnomorhandphone,
@@ -92,45 +101,55 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   val!.isEmpty ? 'Nomor Handphone tidak boleh kosong' : null,
               decoration: const InputDecoration(
                 labelText: 'Nomor Handphone',
-                hintText: 'Enter your Number Phone',
-              ),
-            ),
-            TextFormField(
-              controller: txtnomorktp,
-              validator: (val) => val!.isEmpty ? 'Nomor KTP tidak boleh kosong' : null,
-              decoration: const InputDecoration(
-                labelText: 'Nomor KTP',
-                hintText: 'Enter your Number KTP',
+                hintText: 'Masukkan  Nomor Handphone Anda',
               ),
             ),
             const SizedBox(
-              height: 30,
+              height: 20,
+            ),
+           TextFormField(
+  controller: txtnomorktp,
+  validator: (val) {
+    if (val!.isEmpty) {
+      return 'Nomor KTP tidak boleh kosong';
+    } else if (val.length != 16) {
+      return 'Nomor KTP harus terdiri dari 16 digit';
+    }
+    return null;
+  },
+  decoration: const InputDecoration(
+    labelText: 'Nomor KTP',
+    hintText: 'Masukkan Nomor KTP Anda (16 digit)',
+  ),
+),
+            const SizedBox(
+              height: 20,
             ),
             TextFormField(
               keyboardType: TextInputType.emailAddress,
               controller: txtemail,
               validator: (val) =>
-                  val!.isEmpty ? 'Invalid email address' : null,
+                  val!.isEmpty ? 'email tidak boleh kosong' : null,
               decoration: const InputDecoration(
                 labelText: 'Email',
-                hintText: 'Enter your email',
+                hintText: 'Masukkan Email Anda',
               ),
             ),
             const SizedBox(
-              height: 30,
+              height: 20,
             ),
             TextFormField(
               controller: txtpassword,
               obscureText: true,
               validator: (val) =>
-                  val!.length < 6 ? 'Needs at least 6 characters' : null,
+                  val!.length < 6 ? 'Minimal 6 Huruf' : null,
               decoration: const InputDecoration(
                 labelText: 'Password',
-                hintText: 'Enter your password',
+                hintText: 'Masukkan Password Anda',
               ),
             ),
             const SizedBox(
-              height: 30,
+              height: 20,
             ),
             const SizedBox(
             ),

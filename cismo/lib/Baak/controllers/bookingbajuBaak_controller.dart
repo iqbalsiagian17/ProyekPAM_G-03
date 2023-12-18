@@ -1,19 +1,21 @@
 import 'dart:convert';
 import 'package:cismo/Auth/Login/controllers/login_controller.dart';
 import 'package:http/http.dart' as http;
-import 'package:cismo/global.dart';
 import 'package:cismo/api_response.dart';
-import 'package:cismo/Baak/models/bookingruanganBaak.dart';
+import 'package:cismo/Baak/models/bookingbajuBaak.dart'; // Sesuaikan dengan lokasi file model IzinKeluar.dart Anda
+import 'package:cismo/global.dart';
 
-class BookingRuanganBaakController {
-  static Future<ApiResponse<String>> approveBookingRuangan(int izinId) async {
+class BookingBajuBaakController {
+
+
+  static Future<ApiResponse<String>> approveBookingBaju(int izinId) async {
     ApiResponse<String> apiResponse = ApiResponse();
 
     try {
       String token = await getToken();
 
       final response = await http.put(
-        Uri.parse(baseURL + 'booking-ruangan/$izinId/approve'),
+        Uri.parse(baseURL + 'booking-baju/$izinId/approve'),
         headers: {
           'Accept': 'application/json',
           'Authorization': 'Bearer $token',
@@ -22,7 +24,7 @@ class BookingRuanganBaakController {
 
       switch (response.statusCode) {
         case 200:
-          apiResponse.data = 'Permintaan Booking Ruangan Telah Disetujui';
+          apiResponse.data = 'Permintaan Izin Keluar Telah Disetujui';
           break;
         case 401:
           apiResponse.error = 'Unauthorized';
@@ -34,20 +36,21 @@ class BookingRuanganBaakController {
       }
     } catch (e) {
       apiResponse.error = 'Server error: $e';
-      print("Error in approveBookingRuangan: $e");
+      print("Error in approveIzinKeluar: $e");
     }
 
     return apiResponse;
   }
 
-  static Future<ApiResponse<String>> rejectBookingRuangan(int izinId) async {
+
+ static Future<ApiResponse<String>> rejectBookingBaju(int izinId) async {
     ApiResponse<String> apiResponse = ApiResponse();
 
     try {
       String token = await getToken();
 
       final response = await http.put(
-        Uri.parse(baseURL + 'booking-ruangan/$izinId/reject'),
+        Uri.parse(baseURL + 'booking-baju/$izinId/reject'),
         headers: {
           'Accept': 'application/json',
           'Authorization': 'Bearer $token',
@@ -56,7 +59,7 @@ class BookingRuanganBaakController {
 
       switch (response.statusCode) {
         case 200:
-          apiResponse.data = 'Permintaan Booking Ruangan Telah Ditolak';
+          apiResponse.data = 'Permintaan Izin Keluar Telah Ditolak';
           break;
         case 401:
           apiResponse.error = 'Unauthorized';
@@ -68,21 +71,21 @@ class BookingRuanganBaakController {
       }
     } catch (e) {
       apiResponse.error = 'Server error: $e';
-      print("Error in rejectBookingRuangan: $e");
+      print("Error in rejectIzinKeluar: $e");
     }
 
     return apiResponse;
   }
 
-  static Future<ApiResponse<List<BookingRuanganBaak>>>
-      viewAllRequestsForBaak() async {
-    ApiResponse<List<BookingRuanganBaak>> apiResponse = ApiResponse();
+
+  static Future<ApiResponse<List<BookingBaju>>> viewAllRequestsForBaak() async {
+    ApiResponse<List<BookingBaju>> apiResponse = ApiResponse();
 
     try {
-      String token = await getToken();
+    String token = await getToken();
 
       final response = await http.get(
-        Uri.parse(baseURL + 'booking-ruangan/all'),
+        Uri.parse(baseURL + 'booking-baju/all'),
         headers: {
           'Accept': 'application/json',
           'Authorization': 'Bearer $token',
@@ -91,10 +94,11 @@ class BookingRuanganBaakController {
 
       switch (response.statusCode) {
         case 200:
-          Iterable data = json.decode(response.body)['RequestIzinKeluar'];
-          List<BookingRuanganBaak> bookingRuanganList =
-              data.map((json) => BookingRuanganBaak.fromJson(json)).toList();
-          apiResponse.data = bookingRuanganList;
+          Iterable data = json.decode(response.body)['BookingBaju'];
+          List<BookingBaju> bookingBajuList = data
+              .map((json) => BookingBaju.fromJson(json))
+              .toList();
+          apiResponse.data = bookingBajuList;
           break;
         case 401:
           apiResponse.error = 'Unauthorized';
@@ -111,4 +115,8 @@ class BookingRuanganBaakController {
 
     return apiResponse;
   }
+
+  
+
+  
 }

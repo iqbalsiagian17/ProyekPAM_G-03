@@ -1,23 +1,23 @@
+import 'package:cismo/Mahasiswa/models/baju.dart';
 import 'package:cismo/global.dart';
 import 'package:flutter/material.dart';
-import 'package:cismo/Mahasiswa/views/FormBookingRuangan.dart';
+import 'package:cismo/Mahasiswa/views/FormBookingBaju.dart';
 import 'package:cismo/api_response.dart';
-import 'package:cismo/Mahasiswa/models/bookingruangan.dart';
-import 'package:cismo/Mahasiswa/controllers/bookingruangan_controller.dart';
-import 'package:cismo/Mahasiswa/models/ruangan.dart';
+import 'package:cismo/Mahasiswa/models/bookingbaju.dart';
+import 'package:cismo/Mahasiswa/controllers/bookingbaju_controller.dart';
 
-class BookingRuanganScreen extends StatefulWidget {
+class BookingBajuScreen extends StatefulWidget {
   @override
-  _BookingRuanganScreenState createState() => _BookingRuanganScreenState();
+  _BookingBajuScreenState createState() => _BookingBajuScreenState();
 }
 
-class _BookingRuanganScreenState extends State<BookingRuanganScreen> {
-  List<BookingRuangan> bookingList = [];
-  List<Ruangan> roomList = [];
+class _BookingBajuScreenState extends State<BookingBajuScreen> {
+  List<BookingBaju> bookingList = [];
+  List<Baju> bajuList= [];
 
   void deleteIzinBermalam(int id) async {
     try {
-      ApiResponse response = await DeleteBookingRuangan(id);
+      ApiResponse response = await DeleteBookingBaju(id);
 
       if (response.error == null) {
         await Future.delayed(Duration(milliseconds: 300));
@@ -42,10 +42,10 @@ class _BookingRuanganScreenState extends State<BookingRuanganScreen> {
   }
 
   Future<void> fetchBookingRequests() async {
-    ApiResponse apiResponse = await getRequestRuangan();
+    ApiResponse apiResponse = await getRequestBaju();
     if (apiResponse.data != null) {
       setState(() {
-        bookingList = List<BookingRuangan>.from(apiResponse.data);
+        bookingList = List<BookingBaju>.from(apiResponse.data);
       });
       await fetchRoomList();
     } else {
@@ -54,22 +54,22 @@ class _BookingRuanganScreenState extends State<BookingRuanganScreen> {
   }
 
   Future<void> fetchRoomList() async {
-    ApiResponse roomResponse = await getRuangan();
+    ApiResponse roomResponse = await getBaju();
     if (roomResponse.data != null) {
       setState(() {
-        roomList = List<Ruangan>.from(roomResponse.data);
+        bajuList = List<Baju>.from(roomResponse.data);
       });
     } else {
       print(roomResponse.error);
     }
   }
 
-  String getRoomName(int? roomId) {
-    Ruangan? room = roomList.firstWhere(
-      (room) => room.id == roomId,
-      orElse: () => Ruangan(),
+  String getBajuUkuran(int? bajuId) {
+    Baju? baju = bajuList.firstWhere(
+      (baju) => baju.id == bajuId,
+      orElse: () => Baju(),
     );
-    return room.NamaRuangan ?? 'N/A';
+    return baju.ukuran ?? 'N/A';
   }
 
   @override
@@ -86,7 +86,7 @@ class _BookingRuanganScreenState extends State<BookingRuanganScreen> {
         dataRowHeight: 56,
         columns: [
           DataColumn(label: Text('No')),
-          DataColumn(label: Text('Room')),
+          DataColumn(label: Text('Ukuran')),
           DataColumn(label: Text('Status')),
           DataColumn(label: Text('Actions')), // Added a column for actions
         ],
@@ -95,8 +95,8 @@ class _BookingRuanganScreenState extends State<BookingRuanganScreen> {
           return DataRow(
             cells: [
               DataCell(Text('${index + 1}')),
-              DataCell(Text('${getRoomName(booking.roomId)}')),
-              DataCell(Text(booking.status ?? 'N/A')),
+              DataCell(Text('${getBajuUkuran(booking.bajuId)}')),
+              DataCell(Text(booking.status)),
               DataCell(
                 PopupMenuButton(
                   itemBuilder: (BuildContext context) {
@@ -122,12 +122,10 @@ class _BookingRuanganScreenState extends State<BookingRuanganScreen> {
                             content: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("Keperluan: ${booking.reason}"),
+                                Text("Ukuran: ${booking.bajuId}"),
                                 SizedBox(height: 8),
                                 Text(
-                                    "Waktu Mulai: ${booking.startTime ?? 'N/A'}"),
-                                Text(
-                                    "Waktu Berakhir: ${booking.endTime ?? 'N/A'}"),
+                                    "Waktu PEngambilan: ${booking.tanggalPengambilan}"),
                               ],
                             ),
                             actions: [
@@ -147,7 +145,7 @@ class _BookingRuanganScreenState extends State<BookingRuanganScreen> {
                       );
                     } else if (value == 'delete') {
                       int index = bookingList.indexOf(booking);
-                      BookingRuangan selectedIzinKeluar = bookingList[index];
+                      BookingBaju selectedIzinKeluar = bookingList[index];
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -165,7 +163,7 @@ class _BookingRuanganScreenState extends State<BookingRuanganScreen> {
                               TextButton(
                                 onPressed: () {
                                   deleteIzinBermalam(
-                                      selectedIzinKeluar.id ?? 0);
+                                      selectedIzinKeluar.id);
                                 },
                                 child: Text('Delete'),
                               ),
@@ -186,7 +184,7 @@ class _BookingRuanganScreenState extends State<BookingRuanganScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => BookingFormScreen(),
+              builder: (context) => FormBookingBaju(),
             ),
           ).then((value) {
             if (value == true) {

@@ -81,7 +81,7 @@ class _RequestIzinBermalamScreenState extends State<RequestIzinBermalamScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('List'),
+        title: Text('Permohonan Izin Bermalam'),
       ),
       body: _loading
           ? Center(child: CircularProgressIndicator())
@@ -90,7 +90,7 @@ class _RequestIzinBermalamScreenState extends State<RequestIzinBermalamScreen> {
               child: DataTable(
                 columns: [
                   DataColumn(label: Text('No')),
-                  DataColumn(label: Text('Reason')),
+                  DataColumn(label: Text('Alasan')),
                   DataColumn(label: Text('Status')),
                   DataColumn(label: Text('Actions')),
                 ],

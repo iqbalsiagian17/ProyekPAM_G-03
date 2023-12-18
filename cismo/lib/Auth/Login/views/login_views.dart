@@ -57,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           children: [
-            const SizedBox(
+             SizedBox(
               height: 70,
             ),
             // Displaying the 'itdel.png' logo

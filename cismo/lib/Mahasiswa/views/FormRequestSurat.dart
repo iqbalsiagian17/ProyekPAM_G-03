@@ -144,7 +144,7 @@ final TextEditingController _departureDateTimeController = TextEditingController
               TextFormField(
                 controller: _objectiveController,
                 decoration: InputDecoration(
-                  labelText: 'objective',
+                  labelText: 'Tujuan',
                 ),
               ),
               SizedBox(height: 16.0),

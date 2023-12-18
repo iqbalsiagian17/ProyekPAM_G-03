@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:cismo/api_response.dart';
 import 'package:cismo/Baak/models/requestsuratBaak.dart';
 import 'package:cismo/Baak/controllers/requestsuratBaak_controller.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:cismo/global.dart';
+import 'package:cismo/Auth/Login/controllers/login_controller.dart';
+import 'package:cismo/Baak/models/userBaak.dart';
+
 
 class RequestSuratView extends StatefulWidget {
   @override
@@ -10,18 +16,21 @@ class RequestSuratView extends StatefulWidget {
 
 class _RequestSuratViewState extends State<RequestSuratView> {
   late Future<ApiResponse<List<RequestSurat>>> _requestSuratData;
+    List<MahasiswaData>mahasiswaData =[];
+
 
   @override
   void initState() {
     super.initState();
     _requestSuratData = RequestSuratBaakController.viewAllRequestsForBaak();
+    fetchDataMahasiswa();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Permohonan Booking Ruangan'),
+        title: Text('Permohonan Request Surat Mahasiswa'),
       ),
       body: FutureBuilder<ApiResponse<List<RequestSurat>>>(
         future: _requestSuratData,
@@ -52,19 +61,22 @@ class _RequestSuratViewState extends State<RequestSuratView> {
       ),
     );
   }
-
-  String loggedInUserName = 'Nama Pengguna Default'; 
-
   
   Widget buildRequestSuratTile(RequestSurat requestSurat) {
+      var mahasiswa = mahasiswaData.firstWhere(
+    (m) => m.id.toString() == requestSurat.id.toString(),
+    orElse: () => MahasiswaData(name: 'unknown', id: null, nim: '',email: ''),
+  );
+  
     return ListTile(
-      title: Text('ID: ${requestSurat.userId}'),
+      title: Text('NIM: ${mahasiswa.nim}'),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Reason: ${requestSurat.reason}'),
+          Text('Tujuan: ${mahasiswa.name}'),
+          Text('Tujuan: ${requestSurat.reason}'),
           Text('Status: ${requestSurat.status}'),
-          Text('startDate: ${requestSurat.startDate}'),
+          Text('Waktu Pengambilan : ${requestSurat.startDate}'),
           // Add other widgets as needed
         ],
       ),
@@ -124,4 +136,30 @@ class _RequestSuratViewState extends State<RequestSuratView> {
       });
     }
   }
+
+  Future<void> fetchDataMahasiswa() async {
+  try {
+      String token = await getToken();
+
+  final response = await http.get(
+        Uri.parse('${baseURL}getmahasiswa'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+    if (response.statusCode == 200) {
+      List<dynamic> responseData = json.decode(response.body);
+      setState(() {
+        mahasiswaData = responseData.map((item) => MahasiswaData.fromJson(item)).toList();
+      });
+    } else {
+      throw Exception('Failed to load mahasiswa data');
+    }
+  } catch (error) {
+    throw Exception('Failed to load mahasiswa data: $error');
+  }
+}
+
 }

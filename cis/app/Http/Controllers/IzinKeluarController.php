@@ -7,6 +7,8 @@ use App\Models\IzinKeluar;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use App\Models\Ruangan;
+
 
 class IzinKeluarController extends Controller
 {
@@ -124,7 +126,7 @@ class IzinKeluarController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy($id)
-{
+    {
     $RequestIzinKeluar = IzinKeluar::find($id);
 
     if (!$RequestIzinKeluar) {
@@ -204,5 +206,19 @@ public function rejectIzinKeluar($id)
 }
 
 
-    
+
+public function getMahasiswa()
+{
+    $mhs = User::all();
+
+    return response()->json($mhs, 200);
+}
+
+public function getRuangan()
+{
+    $rng = Ruangan::all();
+
+    return response()->json($rng, 200);
+}
+
 }

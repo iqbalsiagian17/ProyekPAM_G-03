@@ -1,113 +1,54 @@
-import 'package:cismo/Mahasiswa/views/bookingruangan_views.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:cismo/Mahasiswa/models/bookingruangan.dart';
 import 'package:cismo/api_response.dart';
+import 'package:cismo/Mahasiswa/models/ruangan.dart';
 import 'package:cismo/Mahasiswa/controllers/bookingruangan_controller.dart';
-import 'package:cismo/Auth/Login/views/login_views.dart';
-import 'package:cismo/global.dart';
-import 'package:cismo/Auth/Login/controllers/login_controller.dart';
 
-class FormBookingRuangan extends StatefulWidget {
-  final RuanganBooking? formBookingRuangan;
-  final String? title;
-
-  FormBookingRuangan({this.formBookingRuangan, this.title});
-  
+class BookingFormScreen extends StatefulWidget {
   @override
-  _FormBookingRuanganState createState() => _FormBookingRuanganState();
+  _BookingFormScreenState createState() => _BookingFormScreenState();
 }
 
-class _FormBookingRuanganState extends State<FormBookingRuangan> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _ruanganController = TextEditingController();
-  final TextEditingController _startTimeController = TextEditingController();
-  final TextEditingController _endTimeController = TextEditingController();
-  bool _loading = false;
+class _BookingFormScreenState extends State<BookingFormScreen> {
+  int selectedRoomId = 1;
+  TextEditingController reasonController = TextEditingController();
+  TextEditingController startDateTimeController = TextEditingController();
+  TextEditingController endDateTimeController = TextEditingController();
+  List<Ruangan> availableRooms = [];
 
-  void _editRuanganBooking(int id) async {
-  DateTime startTime = DateTime.parse(_startTimeController.text);
-  DateTime endTime = DateTime.parse(_endTimeController.text);
-  ApiResponse response = await updateRuanganBooking(
-    id,
-    _ruanganController.text,
-    startTime,
-    endTime);
-    if (response.error == null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => BookingRuanganScreen(),
-        ),
-      );
-    } else if (response.error == unauthrorized) {
-      logout().then((value) => {
-            Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => LoginScreen()),
-              (route) => false,
-            )
-          });
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('${response.error}'),
-      ));
-      setState(() {
-        _loading = !_loading;
-      });
-    }
-  }
-
-String unauthorized = 'Unauthorized access. Please login again.';
-
-  void _createRuanganBooking() async {
-  DateTime startTime = DateTime.parse(_startTimeController.text);
-  DateTime endTime = DateTime.parse(_endTimeController.text);
-  
-  ApiResponse response = await CreateRuanganBooking(
-    _ruanganController.text,
-    startTime,
-    endTime,
-  );
-
-  if (response.error == null) {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (BuildContext context) => BookingRuanganScreen(),
-      ),
-    );
-  } else if (response.error == unauthorized) {
-    logout().then((value) => {
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => LoginScreen()),
-        (route) => false,
-      )
-    });
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('${response.error}'),
-    ));
-    setState(() {
-      _loading = !_loading;
-    });
-  }
-}
-
-
-
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
-    if (widget.formBookingRuangan != null) {
-      final startTime = widget.formBookingRuangan!.startTime;
-      final endTime = widget.formBookingRuangan!.endTime;
-      final ruangan = widget.formBookingRuangan!.ruangan;
-      _ruanganController.text = ruangan;
-      _startTimeController.text =DateFormat("yyyy-MM-dd HH:mm").format(startTime as DateTime);
-      _endTimeController.text = DateFormat("yyyy-MM-dd HH:mm").format(endTime as DateTime);
-        }
-
     super.initState();
+    fetchAvailableRooms();
+  }
+
+  Future<void> fetchAvailableRooms() async {
+    ApiResponse apiResponse = await getRuangan();
+    if (apiResponse.data != null) {
+      setState(() {
+        availableRooms = List<Ruangan>.from(apiResponse.data);
+        if (availableRooms.isNotEmpty) {
+          selectedRoomId = availableRooms[0].id!;
+        }
+      });
+    } else {
+      // Handle error
+      print(apiResponse.error);
+      _showErrorSnackBar(apiResponse.error);
+    }
+  }
+
+  void _showErrorSnackBar(String? error) {
+    if (error != null) {
+      final snackBar = SnackBar(
+        content: Text('Ruangan sudah dibooking'), // Ubah pesan error di sini
+        backgroundColor: Colors.red,
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 
   Future<void> _selectDate(
@@ -119,7 +60,7 @@ String unauthorized = 'Unauthorized access. Please login again.';
       lastDate: DateTime(2101),
     );
 
-    if (picked != null && picked != controller) {
+    if (picked != null) {
       _selectTime(context, controller, picked);
     }
   }
@@ -134,8 +75,10 @@ String unauthorized = 'Unauthorized access. Please login again.';
     if (picked != null) {
       final DateTime combinedDateTime = DateTime(pickedDate.year,
           pickedDate.month, pickedDate.day, picked.hour, picked.minute);
+
       final formattedDateTime =
           DateFormat("yyyy-MM-dd HH:mm").format(combinedDateTime);
+
       controller.text = formattedDateTime;
     }
   }
@@ -143,92 +86,74 @@ String unauthorized = 'Unauthorized access. Please login again.';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('${widget.title}'),
+        title: Text('Create Booking Request'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              // Reason TextField
-              
-TextFormField(
-                controller: _ruanganController,
-                decoration: InputDecoration(
-                  labelText: 'Ruangan',
-                ),
-              ),
-              SizedBox(height: 16.0),
-              // Start Date DatePicker
-              TextFormField(
-                controller: _startTimeController,
-                onTap: () =>
-                    _selectDate(context, _startTimeController),
-                readOnly: true,
-                decoration: InputDecoration(
-                  labelText: 'Start Date',
-                ),
-              ),
-              SizedBox(height: 16.0),
-
-              // End Date DatePicker
-              TextFormField(
-                controller: _endTimeController,
-                onTap: () =>
-                    _selectDate(context, _endTimeController),
-                readOnly: true,
-                decoration: InputDecoration(
-                  labelText: 'End Date',
-                ),
-              ),
-              SizedBox(height: 16.0),
-
-              // Submit Button
-              ElevatedButton(
-  onPressed: () {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _loading = !_loading;
-      });
-      if (widget.formBookingRuangan == null) {
-        _createRuanganBooking();
-      } else {
-        _editRuanganBooking(widget.formBookingRuangan!.id);
-      }
-    }
-  },
-  child: Text('Submit'),
-),
-SizedBox(height: 16.0), // Adding space between buttons
-// Refresh Button
- SizedBox(height: 8), // Spacer antara Submit Button dan Refresh Text
-
-            // Refresh Text
-            Align(
-              alignment: Alignment.center,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => BookingRuanganScreen(),
-                    ),
-                  );
-                },
-                child: Text(
-                  'Refresh',
-                  style: TextStyle(
-                    color: Colors.blue, // Warna teks
-                    decoration: TextDecoration.underline, // Garis bawah
-                  ),
-                ),
-              ),
+        child: ListView(
+          children: [
+            DropdownButtonFormField(
+              value: selectedRoomId,
+              onChanged: (value) {
+                setState(() {
+                  selectedRoomId = value as int;
+                });
+              },
+              items: getRoomDropdownItems(),
+              decoration: InputDecoration(labelText: 'Select Room'),
+            ),
+            SizedBox(height: 16),
+            TextFormField(
+              controller: reasonController,
+              decoration: InputDecoration(labelText: 'Reason'),
+            ),
+            SizedBox(height: 16),
+            TextFormField(
+              controller: startDateTimeController,
+              onTap: () => _selectDate(context, startDateTimeController),
+              readOnly: true,
+              decoration: InputDecoration(labelText: 'Start Date & Time'),
+            ),
+            SizedBox(height: 16),
+            TextFormField(
+              controller: endDateTimeController,
+              onTap: () => _selectDate(context, endDateTimeController),
+              readOnly: true,
+              decoration: InputDecoration(labelText: 'End Date & Time'),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () async {
+                ApiResponse apiResponse = await createRequestRuangan(
+                  selectedRoomId,
+                  reasonController.text,
+                  DateTime.parse(startDateTimeController.text),
+                  DateTime.parse(endDateTimeController.text),
+                );
+                if (apiResponse.data != null) {
+                  Navigator.pop(context, true);
+                } else {
+                  // Handle error
+                  print(apiResponse.error);
+                  _showErrorSnackBar(apiResponse.error);
+                }
+              },
+              child: Text('Submit'),
             ),
           ],
         ),
       ),
-    ),
-  );
-}}
+    );
+  }
+
+  List<DropdownMenuItem<int>> getRoomDropdownItems() {
+    return availableRooms.map((room) {
+      return DropdownMenuItem<int>(
+        value: room.id!,
+        child: Text(room.NamaRuangan!),
+      );
+    }).toList();
+  }
+}

@@ -84,7 +84,7 @@ class _RequestIzinKeluarScreenState extends State<RequestIzinKeluarScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        title: Text('List'),
+        title: Text('Permohonan Izin Keluar'),
       ),
       body: _loading
           ? Center(child: CircularProgressIndicator())
@@ -93,7 +93,7 @@ class _RequestIzinKeluarScreenState extends State<RequestIzinKeluarScreen> {
               child: DataTable(
                 columns: [
                   DataColumn(label: Text('No')),
-                  DataColumn(label: Text('Reason')),
+                  DataColumn(label: Text('Alasan')),
                   DataColumn(label: Text('Status')),
                   DataColumn(label: Text('Actions')),
                 ],
@@ -102,10 +102,9 @@ class _RequestIzinKeluarScreenState extends State<RequestIzinKeluarScreen> {
                       (requestIzinKeluar) => DataRow(
                         cells: [
                           DataCell(Text(
-                              '${_izinkeluarlist.indexOf(requestIzinKeluar) + 1}')),
+                        '${_izinkeluarlist.indexOf(requestIzinKeluar) + 1}')),
                           DataCell(Text(requestIzinKeluar.reason)),
-                          DataCell(Text(requestIzinKeluar
-                              .status)), // Replace with actual status property
+                          DataCell(Text(requestIzinKeluar.status)), // Replace with actual status property
                           DataCell(
                             PopupMenuButton(
   itemBuilder: (BuildContext context) {

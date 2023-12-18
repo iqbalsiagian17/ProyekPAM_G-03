@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cismo/Auth/Login/views/login_views.dart';
 import 'package:cismo/Mahasiswa/views/requestsurat_views.dart';
 import 'package:cismo/Mahasiswa/views/bookingruangan_views.dart';
+import 'package:cismo/Mahasiswa/views/bookingbaju_views.dart';
 
 class MahasiswaScreen extends StatelessWidget {
   const MahasiswaScreen({Key? key}) : super(key: key);
@@ -31,7 +32,6 @@ class MahasiswaScreen extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          UserCard(), // Menampilkan informasi user
           SizedBox(height: 20),
           Expanded(
             child: Padding(
@@ -81,6 +81,16 @@ class MahasiswaScreen extends StatelessWidget {
                     icon: Icons.room_service, // Ganti dengan ikon yang sesuai
                     text: 'Booking Ruangan', // Ganti teks sesuai dengan menu baru
                   ),
+                  CustomCard(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => BookingBajuScreen()), // Tambahkan menuju BookingRuanganScreen
+                      );
+                    },
+                    icon: Icons.room_service, // Ganti dengan ikon yang sesuai
+                    text: 'Pemesanan Baju', // Ganti teks sesuai dengan menu baru
+                  ),
                   // Tambahkan card lainnya di sini jika diperlukan
                 ],
               ),
@@ -101,39 +111,6 @@ class MahasiswaScreen extends StatelessWidget {
   }
 }
 
-class UserCard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // Ganti dengan informasi yang sesuai dari model login.dart
-    String nama = '...';
-    String nim = '...';
-    String email = '...';
-
-    return Card(
-      elevation: 5,
-      margin: EdgeInsets.all(16.0),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Nama: $nama',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Text('NIM: $nim', style: TextStyle(fontSize: 16)),
-            SizedBox(height: 8),
-            Text('Email: $email', style: TextStyle(fontSize: 16)),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class CustomCard extends StatelessWidget {
   final VoidCallback onPressed;
